@@ -5,11 +5,13 @@
   var C = SSCore, store = new SSStore.Store(), params = new URLSearchParams(location.search), DEBUG = params.get('debug') === '1';
   var game = null, renderer = new SSRender.Renderer($('board')), paused = false, secretOn = null, cabinetT = 0, soft = false, last = 0, mode = 'infinite', toastT = 0;
 
+  var T = window.SSTrack || { begin: function () { return null; }, end: function () {}, update: function () {} }, sess = null;
+  function endSess() { if (sess && game) T.end(sess, { score: game.score, level: game.level, time: game.mode === 'timerun' ? game.time : 0 }); sess = null; }
   function show(id) { document.querySelectorAll('.screen').forEach(function (s) { s.classList.toggle('active', s.id === id); }); }
   function fmt(t) { var m = Math.floor(t / 60), s = (t % 60).toFixed(2); return m + ':' + (s < 10 ? '0' : '') + s; }
   function toast(msg) { var t = $('toast'); t.textContent = msg; t.style.opacity = 1; toastT = 1.4; }
 
-  function start(m, lv) { mode = m; game = new C.Game({ mode: m, level: lv || 1 }); paused = false; hideCabinet(); show('game'); layout(); hud(); if (m === 'timerun') toast('Level ' + game.level + ': clear ' + game.def.goal); }
+  function start(m, lv) { endSess(); mode = m; game = new C.Game({ mode: m, level: lv || 1 }); paused = false; hideCabinet(); show('game'); layout(); hud(); sess = T.begin(m); if (m === 'timerun') toast('Level ' + game.level + ': clear ' + game.def.goal); }
   function layout() { var w = $('well'); renderer.resize(w.clientWidth - 8, w.clientHeight - 8); }
   function hud() {
     $('h-score').textContent = game.score; $('h-level').textContent = game.level;
@@ -32,17 +34,17 @@
     if (g.mode === 'infinite') { store.addInfinite(g.score, g.level); txt = 'Score ' + g.score + ' · Level ' + g.level + ' · Best chain ' + g.maxChain; $('o-title').textContent = 'Game Over'; }
     else if (g.won) { store.addTimeRun(g.time, g.score); txt = 'All 15 levels in ' + fmt(g.time) + ' · Score ' + g.score; $('o-title').textContent = 'Time Run Complete!'; }
     else { txt = 'Reached level ' + g.level + ' of 15 · ' + fmt(g.time); $('o-title').textContent = 'Stack Topped Out'; }
-    $('o-text').textContent = txt; show('over');
+    endSess(); $('o-text').textContent = txt; show('over');
   }
   // --- secret cabinet ---
   function showCabinet() { cabinetT = 5; $('cabinet').hidden = false; }
   function hideCabinet() { cabinetT = 0; $('cabinet').hidden = true; }
   function launchSecret(key) {
     hideCabinet(); key = key || store.takeSecret(); var mod = window.SSSecret[key], cv = $('sec-cv');
-    secretOn = { key: key }; show('secret');
+    secretOn = { key: key, sess: T.begin(key) }; show('secret');
     var sc = Math.max(1, Math.floor(Math.min(innerWidth / 160, (innerHeight - 10) / 192))); cv.width = 160; cv.height = 192; cv.style.width = 160 * sc + 'px'; cv.style.height = 192 * sc + 'px';
     secretOn.quit = mod.start(cv, function (bonus) {
-      if (!secretOn) return; secretOn = null; show(game ? 'game' : 'menu');
+      if (!secretOn) return; T.end(secretOn.sess, { score: bonus }); secretOn = null; show(game ? 'game' : 'menu');
       if (game) { game.addBonus(bonus); toast(mod.title + ' bonus +' + Math.floor(bonus)); hud(); last = performance.now(); }
     });
   }
@@ -52,7 +54,7 @@
   function frame(t) {
     var dt = Math.min(0.05, (t - (last || t)) / 1000); last = t;
     if (game && !paused && !secretOn && $('game').classList.contains('active')) {
-      game.update(dt, soft); handleEvents(); renderer.draw(game, dt); hud();
+      game.update(dt, soft); handleEvents(); renderer.draw(game, dt); hud(); T.update(sess, { score: game.score, level: game.level, time: game.mode === 'timerun' ? game.time : 0 });
       if (cabinetT > 0 && (cabinetT -= dt) <= 0) hideCabinet();
       if (toastT > 0 && (toastT -= dt) <= 0) $('toast').style.opacity = 0;
     }
@@ -88,7 +90,7 @@
   on('b-lb', function () { renderLB(); show('lb'); }); on('b-help', function () { show('help'); });
   on('lb-back', function () { show('menu'); }); on('help-back', function () { show('menu'); });
   on('o-again', function () { start(mode); }); on('o-menu', function () { show('menu'); });
-  on('b-pause', function () { pause(true); }); on('p-resume', function () { pause(false); }); on('p-quit', function () { paused = false; game = null; show('menu'); });
+  on('b-pause', function () { pause(true); }); on('p-resume', function () { pause(false); }); on('p-quit', function () { endSess(); paused = false; game = null; show('menu'); });
   $('cabinet').addEventListener('pointerdown', function (e) { e.preventDefault(); e.stopPropagation(); launchSecret(); });
   on('sec-exit', function () { if (secretOn && secretOn.quit) secretOn.quit(); });
   function renderLB() {
