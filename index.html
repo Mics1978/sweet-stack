@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#3b1d5e"><title>Sweet Stack</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Ccircle cx=%228%22 cy=%228%22 r=%227%22 fill=%22%23ff5fc8%22/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head><body>
+<div id="app">
+  <section id="menu" class="screen active">
+    <h1 class="logo">Sweet<span>Stack</span></h1>
+    <canvas id="menu-candy" width="300" height="70"></canvas>
+    <button class="big" id="b-inf">Infinite</button>
+    <button class="big" id="b-tr">Time Run <small>15 levels</small></button>
+    <button id="b-lb">Leaderboards</button>
+    <button id="b-help">How to play</button>
+    <div id="debug" hidden><b>Debug</b>
+      <label>Time Run level <select id="d-lvl"></select></label><button id="d-go">Go</button>
+      <button id="d-cab">Cabinet</button><button id="d-brick">Brick</button><button id="d-pong">Pong</button><button id="d-ice">Ice</button></div>
+  </section>
+  <section id="game" class="screen">
+    <div id="hud"><div><small>SCORE</small><b id="h-score">0</b></div><div><small id="h-lvl-l">LEVEL</small><b id="h-level">1</b></div>
+      <div><small id="h-x-l">CLEARED</small><b id="h-x">0</b></div><div><small>NEXT</small><canvas id="next" width="40" height="120"></canvas></div>
+      <button id="b-pause" aria-label="Pause">II</button></div>
+    <div id="well"><canvas id="board"></canvas><div id="toast"></div>
+      <button id="cabinet" aria-label="Secret arcade" hidden><svg viewBox="0 0 24 32" width="44" height="58"><rect x="3" y="1" width="18" height="30" rx="2" fill="#222" stroke="#0ff" stroke-width="1.5"/><rect x="6" y="5" width="12" height="9" fill="#0f6"/><circle cx="9" cy="20" r="2" fill="#f33"/><rect x="13" y="19" width="5" height="2" fill="#ff0"/></svg></button></div>
+    <div id="pad"><button data-a="left">◀</button><button data-a="rot">⟳</button><button data-a="down">▼</button><button data-a="drop">⤓</button><button data-a="right">▶</button></div>
+  </section>
+  <section id="over" class="screen"><h2 id="o-title">Game Over</h2><p id="o-text"></p><button class="big" id="o-again">Play again</button><button id="o-menu">Menu</button></section>
+  <section id="lb" class="screen"><h2>Leaderboards</h2><h3>Infinite</h3><ol id="lb-inf"></ol><h3>Time Run (best times)</h3><ol id="lb-tr"></ol><p id="lb-sec"></p><button id="lb-back">Back</button></section>
+  <section id="help" class="screen"><h2>How to play</h2><p>Move the falling trio of candies, tap ⟳ (or swipe up / tap the board) to cycle its order, and drop it. Line up 3+ of the same candy across, down or diagonally to burst them. Chains multiply your score.</p>
+    <p>Touch: swipe left/right to move, tap to rotate, swipe down to drop. Keys: ← → move, ↑/Space rotate, ↓ soft drop, Enter hard drop, P pause.</p><p>Rumour has it a long enough chain wakes something old…</p>
+    <p class="credits">Sweet Stack — all artwork drawn in code. Built with AI assistance.</p><button id="help-back">Back</button></section>
+  <section id="paused" class="screen overlay"><h2>Paused</h2><button class="big" id="p-resume">Resume</button><button id="p-quit">Quit to menu</button></section>
+  <section id="secret" class="screen overlay"><canvas id="sec-cv"></canvas><button id="sec-exit">Exit ✕</button></section>
+</div>
+<script src="js/core.js"></script><script src="js/storage.js"></script><script src="js/render.js"></script>
+<script src="js/secret/brick.js"></script><script src="js/secret/pong.js"></script><script src="js/secret/iceplains.js"></script>
+<script src="js/main.js"></script>
+</body></html>

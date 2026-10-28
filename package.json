@@ -1,0 +1,3 @@
+{ "name": "sweet-stack", "version": "1.0.0", "private": true,
+  "scripts": { "test": "node tests/logic.test.js", "smoke": "node tests/smoke.mjs" },
+  "devDependencies": { "playwright-core": "^1.47.0" } }
