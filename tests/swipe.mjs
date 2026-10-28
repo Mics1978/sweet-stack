@@ -1,0 +1,15 @@
+import { chromium, devices } from 'playwright-core';
+const B=process.argv[2]||'http://localhost:8124/';
+const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+const c=await b.newContext(devices['Pixel 7']), p=await c.newPage(), errs=[]; p.on('pageerror',e=>errs.push(e.message)); p.on('console',m=>m.type()==='error'&&!/api\/track|501/.test(m.text())&&errs.push(m.text()));
+await p.goto(B); await p.tap('#b-inf'); await p.waitForTimeout(300);
+const cdp=await c.newCDPSession(p); const T=(type,x,y)=>cdp.send('Input.dispatchTouchEvent',{type,touchPoints:type==='touchEnd'?[]:[{x,y}]});
+const st=()=>p.evaluate(()=>({x:__ss.game.piece&&__ss.game.piece.x,y:__ss.game.piece&&__ss.game.piece.y,cells:__ss.game.piece&&__ss.game.piece.cells.join(),score:__ss.game.score,n:__ss.game.grid.flat().filter(Boolean).length}));
+const r=await p.evaluate(()=>{const b=document.getElementById('board').getBoundingClientRect();return {x:b.x,y:b.y,w:b.width,h:b.height,cell:b.width/6}});
+const cx=r.x+r.w/2, cy=r.y+r.h*0.4, res={};
+let s0=await st(); await T('touchStart',cx,cy); for(let i=1;i<=10;i++){await T('touchMove',cx+i*r.cell*0.13,cy);} await T('touchEnd'); let s1=await st(); res.dragRight={from:s0.x,to:s1.x};
+s0=s1; await T('touchStart',cx,cy); await T('touchEnd'); s1=await st(); res.tapRotate={changed:s0.cells!==s1.cells};
+s0=s1; await T('touchStart',cx,cy); for(let i=1;i<=6;i++){await T('touchMove',cx,cy+i*30);await p.waitForTimeout(150);} let mid=await st(); await T('touchEnd'); res.slowSoft={yBefore:s0.y,yDuring:mid.y,scoreGain:mid.score-s0.score};
+await p.waitForTimeout(300); s0=await st(); await T('touchStart',cx,cy); for(let i=1;i<=3;i++){await T('touchMove',cx,cy+i*50);} await T('touchEnd'); await p.waitForTimeout(400); s1=await st(); res.flickDrop={placedBefore:s0.n,placedAfter:s1.n,newPieceY:s1.y};
+const scrollY=await p.evaluate(()=>scrollY); console.log(JSON.stringify({res,errs,scrollY}));
+await p.screenshot({path:'/tmp/ss-swipe.png'}); await b.close();

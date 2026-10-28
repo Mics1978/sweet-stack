@@ -21,7 +21,7 @@
   }
   function handleEvents() {
     while (game.events.length) { var e = game.events.shift();
-      if (e.type === 'clear') { renderer.burst(e.cells); if (e.chain > 1) toast(e.chain + '× CHAIN! +' + e.points); }
+      if (e.type === 'clear') { renderer.burst(e.cells); if (e.chain > 1) toast(e.chain + 'x CHAIN! +' + e.points); }
       else if (e.type === 'cabinet') showCabinet();
       else if (e.type === 'level') toast('Level ' + e.level + '!');
       else if (e.type === 'levelDone') { toast('Level ' + e.level + ' clear! ' + fmt(e.time)); if (!game.won) setTimeout(function () { toast('Level ' + game.level + ': clear ' + game.def.goal); }, 1400); }
@@ -69,12 +69,28 @@
       if (a === 'left' || a === 'right' || a === 'down') rep = setInterval(function () { act(a); }, a === 'down' ? 60 : 140); });
     ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (ev) { b.addEventListener(ev, function () { clearInterval(rep); }); });
   });
-  var sw = null, bd = $('board');
-  bd.addEventListener('pointerdown', function (e) { sw = { x: e.clientX, y: e.clientY, moved: 0, t: performance.now() }; });
-  bd.addEventListener('pointermove', function (e) { if (!sw || !game) return; var step = renderer.cell, dx = e.clientX - sw.x;
-    while (Math.abs(dx) >= step) { var d = dx > 0 ? 1 : -1; act(d > 0 ? 'right' : 'left'); sw.x += d * step; dx -= d * step; sw.moved = 1; } });
-  bd.addEventListener('pointerup', function (e) { if (!sw) return; var dy = e.clientY - sw.y;
-    if (dy > renderer.cell * 1.5) act('drop'); else if (dy < -renderer.cell * 1.5 || !sw.moved) act('rot'); sw = null; });
+  // One-thumb gestures on the whole play area: drag sideways = piece follows finger column by column;
+  // tap = rotate; quick flick down = hard drop; slow drag down = soft drop (while held). Buttons stay as fallback.
+  var sw = null, bd = $('well');
+  function gx(e) { return e.clientX; }
+  bd.addEventListener('pointerdown', function (e) { if (e.target.closest('#cabinet')) return; e.preventDefault(); try { bd.setPointerCapture(e.pointerId); } catch (_) {}
+    sw = { id: e.pointerId, x0: gx(e), y0: e.clientY, cols: 0, t0: performance.now(), moved: false, axis: null, lastY: e.clientY, lastT: performance.now(), vy: 0 }; });
+  bd.addEventListener('pointermove', function (e) { if (!sw || e.pointerId !== sw.id || !game) return; e.preventDefault();
+    var cell = renderer.cell || 40, dx = gx(e) - sw.x0, dy = e.clientY - sw.y0, now = performance.now();
+    if (!sw.axis && (Math.abs(dx) > 12 || Math.abs(dy) > 12)) { sw.axis = Math.abs(dx) >= Math.abs(dy) * 0.8 ? 'x' : 'y'; sw.moved = true; }
+    if (sw.axis === 'x' || (sw.axis === 'y' && Math.abs(dx) > cell * 0.9)) { // sideways: follow finger; ~0.6 cell per column feels forgiving
+      var want = Math.round(dx / (cell * 0.6)); while (sw.cols < want) { act('right'); sw.cols++; } while (sw.cols > want) { act('left'); sw.cols--; } }
+    var dtm = Math.max(1, now - sw.lastT); sw.vy = 0.6 * sw.vy + 0.4 * ((e.clientY - sw.lastY) / dtm); sw.lastY = e.clientY; sw.lastT = now;
+    soft = sw.axis === 'y' && dy > cell * 0.5 && sw.vy < 0.9; });
+  function swEnd(e) { if (!sw || (e && e.pointerId !== sw.id)) return; var dy = (e ? e.clientY : sw.lastY) - sw.y0, dt = performance.now() - sw.t0;
+    soft = false; var cell = renderer.cell || 40;
+    if (e && e.type === 'pointerup') {
+      if (sw.axis === 'y' && dy > cell * 0.8 && (sw.vy > 0.7 || (dy / dt) > 0.8)) act('drop');   // flick down
+      else if (!sw.moved && dt < 450) act('rot');                                                // tap
+    }
+    sw = null; }
+  bd.addEventListener('pointerup', swEnd); bd.addEventListener('pointercancel', swEnd);
+  ['touchmove', 'gesturestart', 'dblclick'].forEach(function (ev) { document.addEventListener(ev, function (e) { if (e.target.closest && e.target.closest('#game,#secret')) e.preventDefault(); }, { passive: false }); });
   addEventListener('keydown', function (e) {
     if (secretOn) return; var k = e.key;
     if (k === 'p' || k === 'P' || k === 'Escape') { if (game && $('game').classList.contains('active')) pause(true); else if (paused) pause(false); return; }

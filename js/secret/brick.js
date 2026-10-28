@@ -32,7 +32,7 @@
       c.fillStyle = '#000'; c.fillRect(0, 0, W, H); c.fillStyle = '#8e8e8e'; c.fillRect(0, 10, W, 2);
       bricks.forEach(function (b) { if (b.on) { c.fillStyle = COL[b.r]; c.fillRect(b.x, b.y, 19, 6); } });
       c.fillStyle = '#d82800'; c.fillRect(pad.x, 180, pad.w, 4); c.fillStyle = '#fff'; c.fillRect(ball.x | 0, ball.y | 0, 3, 3);
-      c.font = '8px monospace'; c.fillStyle = '#fc9838'; c.fillText('BRICK BLITZ ' + score + '  ♥' + lives, 4, 8);
+      c.font = '8px monospace'; c.fillStyle = '#fc9838'; c.fillText('BRICK BLITZ ' + score + '  LIVES ' + lives, 4, 8);
       if (!ball.live && !ended) c.fillText('TAP / SPACE TO SERVE', 32, 150); if (ended) c.fillText('GAME OVER', 58, 120);
     }
     (function loop() { if (ended < 2) { if (!ended) step(); draw(); raf = requestAnimationFrame(loop); } })();

@@ -56,7 +56,7 @@
       bolts.forEach(function (b) { rect(b.x - 1, b.y - 1, 2, 3, '#ff3020'); });
       if (!(ended && f & 4)) { rect(p.x - 4, p.y - 2, 8, 4, '#e86a10'); rect(p.x - 1, p.y - 5, 2, 3, '#e86a10'); rect(p.x - 5, p.y + 2, 2, 2, '#fff'); rect(p.x + 3, p.y + 2, 2, 2, '#fff'); }
       rect(0, 0, W, 11, '#202040'); c.font = '8px monospace'; c.fillStyle = '#fff';
-      c.fillText('ICE PLAINS ' + Math.floor(t) + 's  TRIP ' + trips + '  ♦' + shields, 2, 8);
+      c.fillText('ICE PLAINS ' + Math.floor(t) + 's  TRIP ' + trips + '  SH ' + shields, 2, 8);
       rect(BTN.x, BTN.y, BTN.w, BTN.h, cable ? '#d8d800' : '#204060'); c.fillStyle = cable ? '#000' : '#fff'; c.fillText(cable ? 'RELEASE' : 'CABLE', BTN.x + 6, BTN.y + 10);
       if (ended) { c.fillStyle = '#000'; c.fillText('BONUS ' + bonus(), 52, 96); }
     }
