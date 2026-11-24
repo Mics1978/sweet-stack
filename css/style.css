@@ -76,3 +76,20 @@ button:focus-visible{outline:3px solid #ffe29b;outline-offset:2px}
 p,ol,#debug{background:linear-gradient(#302452,#1a1937);border:3px solid #100d29;border-radius:5px;box-shadow:inset 0 0 0 1px #7760a6,0 4px #0b0b20}
 .overlay{background:#100e25f2}
 @media(max-height:600px){#menu{gap:7px}.logo{font-size:54px}#menu button{padding:7px 16px}#menu .big{font-size:25px}#menu-candy{height:45px}}
+
+/* Amiga Plus HD skin */
+:root{--navy:#112448;--panel:#18325b;--blue:#208bff;--green:#00e5a0;--orange:#ff501f;--amber:#ffd53e;--purple:#a55bff;--pink:#ff4fa9;--lime:#b4f238}
+body{background:radial-gradient(ellipse at 50% 0%,#3f7fbb 0,transparent 62%),linear-gradient(155deg,#182f63,#101d40 70%,#412759)}
+#app:before{opacity:.14}
+.logo .w1{color:#ffce4d;-webkit-text-stroke:3px #47244a;text-shadow:0 4px #ff632d,0 7px #a5304c,0 10px #191d40}
+.logo .w2{color:#54ffcf;text-shadow:0 3px #0eaab1,0 7px #28558b,0 10px #191d40}
+#menu:after{content:"AMIGA PLUS • HD ARCADE EDITION";font-size:11px;letter-spacing:1.5px;color:#d7f8ff}
+#board,#menu-candy,#next{image-rendering:auto}
+#board{border-color:#12233e;box-shadow:0 0 0 2px #79c7ff,0 0 0 4px #284b80,0 5px 0 4px #101b36}
+button,button.big{border-radius:9px;background:linear-gradient(#80ccff,#238cf5 42%,#1763bd);box-shadow:inset 0 0 0 1px #d7f3ff99,0 4px #122748}
+button.big,#pad [data-a=drop]{background:linear-gradient(#ffc658,#ff632b 48%,#c93438)}
+button.big:nth-of-type(2),#pad [data-a=rot]{background:linear-gradient(#83ffd4,#00b98b 48%,#087b80)}
+#hud>div{background:linear-gradient(#2b5081,#183158);box-shadow:inset 0 0 0 1px #679ed4,0 3px #0a172e}
+#hud small{color:#baf4ff}#hud b{color:#fff7be}
+#pad [data-a=down],#b-pause{background:linear-gradient(#c999ff,#9858e9 48%,#6635ad)}
+.overlay{background:#12213ff5}
