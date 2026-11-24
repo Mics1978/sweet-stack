@@ -44,3 +44,35 @@ p{max-width:520px;font-size:17px;line-height:1.35;background:var(--panel);border
 #sec-cv{image-rendering:pixelated;touch-action:none;max-width:100%;max-height:100%;border:6px solid var(--ink);border-radius:10px;box-shadow:0 0 0 6px var(--amber),0 0 0 11px var(--ink),8px 8px 0 11px var(--ink)}
 #sec-exit{position:absolute;top:10px;right:10px;min-width:0;font-size:18px;padding:4px 12px;background:var(--orange);display:flex;align-items:center;gap:6px}#sec-exit .ic{width:22px;height:22px;margin:0}
 @media (max-width:600px){#pad button{padding:4px 0}.ic{width:30px;height:30px}#hud b{font-size:18px}}
+
+
+/* Sweet Stack 16-bit arcade skin: layout and interaction contract unchanged. */
+:root{--ink:#100d29;--navy:#100e25;--panel:#1c1940;--blue:#4d78ca;--green:#66e0ae;--orange:#ff8a56;--amber:#ffcf81;--purple:#a98bef;--pink:#ff89c3;--lime:#d4ef80}
+body{background:radial-gradient(ellipse at 50% 18%,#49316f 0,transparent 55%),repeating-linear-gradient(0deg,#0b0b2200 0 3px,#08091a20 3px 4px),linear-gradient(150deg,#201a43,#0d1027 65%,#201634)}
+#app:before{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(circle,#fae6ba75 1px,transparent 1.6px),radial-gradient(circle,#b5a5ff60 1px,transparent 1.5px);background-size:67px 79px,113px 97px;background-position:15px 8px,41px 31px;opacity:.35}
+.screen{isolation:isolate}
+#menu{gap:12px}
+.brandmark{color:#dfd6ff;font-size:12px;letter-spacing:1.2px;text-transform:uppercase;text-shadow:2px 2px #17102e}
+.logo{transform:none;line-height:.92;letter-spacing:-1px}
+.logo .w1,.logo .w2{color:#fff0b0;-webkit-text-stroke:3px #352049;text-shadow:0 3px #c75b49,0 6px #79364b,0 8px #231638,3px 8px #231638,0 10px #100d29}
+.logo .w2{color:#a5f5c9;text-shadow:0 3px #3db39c,0 6px #216678,0 8px #231638,3px 8px #231638,0 10px #100d29;transform:none}
+#menu-candy,#next{image-rendering:pixelated}
+button,button.big{border:3px solid #100d29;border-radius:6px;background:linear-gradient(#779fe9 0 8%,#4d78ca 8% 78%,#3554a0 78%);box-shadow:inset 0 0 0 2px #b0c7f050,0 4px #17102d,0 6px #080a1d;text-shadow:0 2px #211737;-webkit-text-stroke:1px #211737;transform:none}
+button.big{background:linear-gradient(#ffc38b 0 9%,#e67753 9% 75%,#b4494d 75%);font-size:30px}
+button.big:nth-of-type(2){transform:none;background:linear-gradient(#c3ffe0 0 9%,#51b99e 9% 75%,#31827d 75%)}
+button:active,button.big:active,#pad button:active{transform:translateY(3px);box-shadow:inset 0 0 0 2px #ffffff20,0 1px #080a1d}
+button:focus-visible{outline:3px solid #ffe29b;outline-offset:2px}
+#game{gap:5px}
+#hud{gap:5px}
+#hud>div{border:2px solid #100d29;border-radius:5px;background:linear-gradient(#30275a,#171835);box-shadow:inset 0 0 0 1px #8470bc,0 3px #0a0b1c}
+#hud small{color:#c8b9ff;letter-spacing:1px;font-size:10px}
+#hud b{color:#fff0bd;-webkit-text-stroke:1px #100d29;font-variant-numeric:tabular-nums}
+#b-pause,#pad [data-a=down]{background:linear-gradient(#c0a8f9 0 10%,#8c6ac9 10% 78%,#644897 78%)}
+#board{border:4px solid #100d29;border-radius:3px;box-shadow:0 0 0 2px #9e7bd0,0 0 0 4px #352451,0 5px 0 4px #090b21,0 0 22px #8e6dd63a;image-rendering:pixelated}
+#pad button{border-radius:5px;border-width:3px;box-shadow:inset 0 0 0 1px #ffffff50,0 3px #0a0b1e}
+#pad [data-a=rot]{background:linear-gradient(#b1f5d2 0 10%,#4bb998 10% 78%,#327d77 78%)}
+#pad [data-a=drop]{background:linear-gradient(#ffbd88 0 10%,#e67753 10% 78%,#b4494d 78%)}
+#toast{color:#fff0b0;text-shadow:0 3px #d56b58,0 5px #422854,3px 5px #100d29}
+p,ol,#debug{background:linear-gradient(#302452,#1a1937);border:3px solid #100d29;border-radius:5px;box-shadow:inset 0 0 0 1px #7760a6,0 4px #0b0b20}
+.overlay{background:#100e25f2}
+@media(max-height:600px){#menu{gap:7px}.logo{font-size:54px}#menu button{padding:7px 16px}#menu .big{font-size:25px}#menu-candy{height:45px}}
