@@ -7,7 +7,8 @@
 
   var T = window.SSTrack || { begin: function () { return null; }, end: function () {}, update: function () {} }, sess = null;
   function endSess() { if (sess && game) T.end(sess, { score: game.score, level: game.level, time: game.mode === 'timerun' ? game.time : 0 }); sess = null; }
-  function show(id) { document.querySelectorAll('.screen').forEach(function (s) { s.classList.toggle('active', s.id === id); }); }
+  var A = window.SSAudio || { mode:function(){}, fx:function(){} };
+  function show(id) { document.querySelectorAll('.screen').forEach(function (s) { s.classList.toggle('active', s.id === id); }); A.mode(id === 'game' ? mode : id === 'secret' ? 'secret' : id === 'paused' || id === 'over' ? 'silent' : 'menu'); }
   function fmt(t) { var m = Math.floor(t / 60), s = (t % 60).toFixed(2); return m + ':' + (s < 10 ? '0' : '') + s; }
   function toast(msg) { var t = $('toast'); t.textContent = msg; t.style.opacity = 1; toastT = 1.4; }
 
@@ -21,6 +22,7 @@
   }
   function handleEvents() {
     while (game.events.length) { var e = game.events.shift();
+      A.fx(e.type === 'levelDone' ? 'level' : e.type, e.chain);
       if (e.type === 'clear') { renderer.burst(e.cells); if (e.chain > 1) toast(e.chain + 'x CHAIN! +' + e.points); }
       else if (e.type === 'cabinet') showCabinet();
       else if (e.type === 'level') toast('Level ' + e.level + '!');
@@ -63,7 +65,7 @@
   requestAnimationFrame(frame);
 
   // --- input ---
-  function act(a) { if (!game || paused || secretOn) return; ({ left: function () { game.move(-1); }, right: function () { game.move(1); }, rot: function () { game.rotate(); }, down: function () { game.softDrop(); }, drop: function () { game.hardDrop(); } })[a](); }
+  function act(a) { if (!game || paused || secretOn) return; var falling = game.phase === 'fall' && !game.over; ({ left: function () { if(game.move(-1)) A.fx('move'); }, right: function () { if(game.move(1)) A.fx('move'); }, rot: function () { game.rotate(); if(falling) A.fx('rotate'); }, down: function () { game.softDrop(); if(falling && game.phase !== 'fall') A.fx('drop'); }, drop: function () { game.hardDrop(); if(falling) A.fx('drop'); } })[a](); }
   document.querySelectorAll('#pad button').forEach(function (b) {
     var rep; b.addEventListener('pointerdown', function (e) { e.preventDefault(); var a = b.dataset.a; act(a);
       if (a === 'left' || a === 'right' || a === 'down') rep = setInterval(function () { act(a); }, a === 'down' ? 60 : 140); });
