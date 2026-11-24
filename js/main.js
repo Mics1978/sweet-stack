@@ -18,7 +18,7 @@
     $('h-score').textContent = game.score; $('h-level').textContent = game.level;
     if (game.mode === 'timerun') { $('h-x-l').textContent = 'TIME'; $('h-x').textContent = fmt(game.time) + ' ' + Math.min(game.levelCleared, game.def.goal) + '/' + game.def.goal; }
     else { $('h-x-l').textContent = 'CLEARED'; $('h-x').textContent = game.cleared; }
-    var n = $('next'), c = n.getContext('2d'); c.clearRect(0, 0, 40, 120); for (var i = 0; i < 3; i++) c.drawImage(SSRender.sprite(game.next[i], 40), 0, i * 40, 40, 40);
+    var n = $('next'), d=Math.min(2,window.devicePixelRatio||1), w=Math.round(40*d); if(n.width!==w||n.height!==w*3){n.width=w;n.height=w*3;} var c=n.getContext('2d');c.clearRect(0,0,w,w*3);for(var i=0;i<3;i++)c.drawImage(SSRender.sprite(game.next[i],w),0,i*w,w,w);
   }
   function handleEvents() {
     while (game.events.length) { var e = game.events.shift();
@@ -119,7 +119,7 @@
   }
   addEventListener('resize', function () { if (game && $('game').classList.contains('active')) layout(); });
   // menu candy strip
-  (function () { var c = $('menu-candy').getContext('2d'); for (var i = 0; i < 7; i++) c.drawImage(SSRender.sprite(i + 1, 80), 4 + i * 42, 15, 40, 40); })();
+  (function () { var cv=$('menu-candy'), d=Math.min(2,window.devicePixelRatio||1);cv.width=Math.round(300*d);cv.height=Math.round(70*d);cv.style.height='70px';var c=cv.getContext('2d');c.scale(d,d);for(var i=0;i<7;i++)c.drawImage(SSRender.sprite(i+1,Math.round(40*d)),4+i*42,15,40,40); })();
   // --- debug hooks: ?debug=1 shows panel; ?debug=1&level=N starts Time Run at N; &secret=brick|pong|ice launches a secret ---
   if (DEBUG) {
     $('debug').hidden = false; var s = $('d-lvl'); for (var i = 1; i <= C.TIME_RUN_LEVELS; i++) s.add(new Option(i, i));
